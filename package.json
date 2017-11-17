@@ -1,6 +1,6 @@
 {
   "name": "mobido-bot-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Library for communicating with the Mobido server and other bot servers",
   "main": "index.js",
   "scripts": {
