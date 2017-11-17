@@ -1,0 +1,27 @@
+{
+  "name": "mobido-bot-client",
+  "version": "1.0.0",
+  "description": "Library for communicating with the Mobido server and other bot servers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mobido/mobido-bot-client.git"
+  },
+  "keywords": [
+    "mobido",
+    "bot",
+    "client"
+  ],
+  "author": "Mike Prince",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mobido/mobido-bot-client/issues"
+  },
+  "homepage": "https://github.com/mobido/mobido-bot-client#readme",
+  "dependencies": {
+    "request": "^2.79.0"
+  }
+}
