@@ -1,0 +1,18 @@
+{
+	"nickname": "xBot",
+	"widget": {
+		"url": "widget.html"
+	},
+	"publicKeys": {
+		"url": "mobido-public-keys.json"
+	},
+	"webhook": {
+		"url": "webhook"
+	},
+	"homepage": {
+		"url": "homepage.html"
+	},
+	"aboutpage": {
+		"url": "about.html"
+	}
+}

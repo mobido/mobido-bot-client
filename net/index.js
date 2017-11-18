@@ -7,23 +7,6 @@ exports.renderError = function(req,res,err) {
 	res.render('error',{message:message});
 }
 
-// err = {code:500,message:'Cant access db',details:['Authentication error']}
-// - or -
-// err = 500,message = 'Cant access db',details = ['problem1','problem2'...]
-exports.signalError = function(req,res,err,message,details) {
-    if( message ) err = { code:err, message:message };
-    if( details ) err.details = details;
-    if( !err.code ) err.code = 500;
-    log(req,err.code,err);
-    res.status(err.code).json(err);
-}
-
-exports.Error = function(code,message,details) {
-	this.code = code;
-	if( message ) this.message = message;
-	if( details ) this.details = details;
-}
-
 //===== New style error reporting =====
 
 exports.signalNotOk = function(req,res,statusCode,message,details) {
@@ -32,7 +15,7 @@ exports.signalNotOk = function(req,res,statusCode,message,details) {
     res.status(statusCode).json(err);
 }
 
-exports.signalError2 = function(req,res,err) {
+exports.signalError = function(req,res,err) {
 	var statusCode = 500;	// assume generic internal server error
 	if( err instanceof ServerError && err.statusCode ) {
     	statusCode = err.statusCode;
@@ -106,71 +89,4 @@ exports.getLocalAddresses = function() {
 	});
 
 	return result;
-}
-
-exports.getClusterAddress = function() {
-	var addresses = exports.getLocalAddresses();
-
-	console.log( 'Cluster addresses are', JSON.stringify( addresses ) );
-
-	var result;
-	Object.keys(addresses).forEach(function(key){
-		var addr = addresses[key];
-		if( hasPrefix( addr, ['192.168.','172.31.','172.16.','10.'] ) )
-			result = addr;
-	});
-
-	if( !result ) {
-		console.log( 'Failed to find cluster address from', JSON.stringify( addresses ) );
-	}
-
-	return result;
-}
-
-function hasPrefix( s, prefix ) {
-	for( var i = 0; i < prefix.length; i++ ) {
-		if( s.indexOf( prefix[i] ) == 0 )
-			return true;
-	}
-
-	return false;
-}
-
-exports.isProduction = function() {
-	var addr = exports.getClusterAddress();
-	if( addr )
-		return hasPrefix( addr, ['172.31.','172.16.','10.'] );
-
-	console.log( 'ERROR: Failed to get network address.  This should only heppen in dev, so assume dev' );
-	return false;
-}
-
-exports.isLocalRequest = function(req) {
-	var conn = req.connection;
-	var local = conn.address();
-	var remote = conn.remoteAddress;
-
-	if( local && local.address == remote ) {
-		if( DEBUG ) console.log( new Date(), 'isLocalRequest(true): ',local,'==',remote );
-		return true;
-	} else {
-		if( DEBUG ) console.log( new Date(), 'isLocalRequest(false): ',local,'!=',remote );
-		return false;
-	}
-}
-
-exports.isForwardWithinVpc = function(req) {
-	var ipList = req.headers['x-forwarded-for'];
-	if( !ipList )
-		return false;
-
-	var isLocal = false;
-	ipList.split(',').forEach(function(e){
-		var addr = e.trim();
-		if( hasPrefix( addr, ['172.31.','172.16.','10.'] ) ) {
-			isLocal = true;
-		}
-	});
-
-	return isLocal;
 }

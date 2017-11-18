@@ -1,0 +1,121 @@
+body, input, button, select, option, textarea {
+    font-family: -apple-system, Helvetica Neue;
+}
+body {
+    font-size: 16px;
+    margin: 0px;
+}
+
+/*input, button, select, option, textarea {
+    font-size: 16px;
+}*/
+
+button {
+    font-size: 100%;
+}
+
+div#hamburger_mask {
+	float: right;
+	width: 40px;
+	height: 40px;
+	display: inline-block;
+}
+
+div#error-section {
+	background-color: yellow;
+	color: black;
+	margin: 5px;
+	display: none;
+}
+
+div.section-header {
+	background-color: #f0f0f0;
+	font-weight: bold;
+	max-width: 1000px;
+	padding: 3px 8px;
+}
+
+div.subsection-header {
+	margin-top: 10px;
+	text-decoration: underline;
+}
+
+.section-content {
+	margin: 5px;
+}
+
+.no-margin { margin: 0px; }
+
+.with-margin { margin: 5px; }
+
+.section-header img.button {
+	float: right;
+	margin-right: 8px;
+	width: 16px;
+	height: 16px;
+}
+
+.section-header img.spinner {
+	float: right;
+	margin-right: 8px;
+	width: 16px;
+	height: 16px;
+	display: none;
+}
+
+table.gray-header tr:first-child {
+	background-color: #f8f8f8;
+}
+
+table.table-header tr:first-child {
+	background-color: #e1edff;
+}
+
+td {
+	vertical-align: top;
+}
+
+.radio-label {
+	display: block;
+	margin-left: 20px;
+}
+
+img.spinner {
+	width: 12px;
+	height: 12px;
+	display: none;	
+}
+
+#success_bar {
+	width: 100%;
+	background-color: #a0cfa0;
+	border-bottom: 1px solid green;
+	color: green;
+	display: none;
+	padding-left: 8px;
+}
+
+#success_bar .cancel {
+	float: right;
+	width: 16px;
+	height: 16px;
+	margin-right: 54px;
+	margin-top: 1px;
+}
+
+#error_bar {
+	width: 100%;
+	background-color: #ffc5c5;
+	border-bottom: 1px solid red;
+	color: red;
+	display: none;
+	padding-left: 8px;
+}
+
+#error_bar .cancel {
+	float: right;
+	width: 16px;
+	height: 16px;
+	margin-right: 54px;
+	margin-top: 1px;
+}

@@ -1,8 +1,7 @@
-var fs = require('fs');
-var path = require('path');
-var crypto = require('crypto');
+const fs = require('fs-extra');
+const crypto = require('crypto');
 const readline = require('readline');
-const MWS = require('../mobido_modules/mobidoWebService')
+const MWS = require('./index')
 
 const DEBUG = process.env.DEBUG;
 const modpGroup = 'modp15';
@@ -11,6 +10,57 @@ const modpGroup = 'modp15';
 var shimData = { users:[], bots:{} };
 var accessKey;
 var fetchAccessKeyResult;
+
+var options = {
+    static_pages_dir: "static_public"
+};
+
+// If there was a botname provided on the command line, make sure the bot is setup
+const argv = process.argv;
+if( argv.length > 1 ) {
+
+    console.log( '__dirname', __dirname );
+
+    const botname = argv[2].toLowerCase();
+    if( botname.endsWith('bot') != true ) {
+        console.log( "Expected second argument to be a bot name, ending in 'bot'" );
+        return;
+    }
+
+    const name = botname.substring( 0, botname.length - 3 );
+    console.log( 'Bot simple name is', name );
+
+    // ensure bot module file exists
+    var path = 'bot_modules/' + name;
+    fs.ensureDirSync(path);
+    path += '/' + name + 'Bot.js';
+    if( fs.existsSync( path ) == false ) {
+        console.log( 'Creating bot module', path );
+        fs.copyFileSync( __dirname + '/templates/xBot.js', path );
+    }
+
+    // ensure bot static PUBLIC files are up
+    path = options.static_pages_dir + '/a/' + name;
+    fs.ensureDirSync(path);
+    var manifest = path + '/manifest.json';
+    if( fs.existsSync( manifest ) == false ) {
+        console.log( 'Manifest missing; copying default webfiles' );
+        fs.copySync( __dirname + '/templates/bot_webfiles', path );
+    }
+
+    // ensure common static files are up
+    const filterFunc = (src, dest) => {
+        var exists = fs.existsSync( dest );
+        //console.log( 'Exists?', src, dest, exists );
+        return !exists;
+    };
+    ['css','images','js'].forEach(function(type){
+        var src = __dirname + '/templates/common_webfiles/common-'+type;
+        var dest = options.static_pages_dir + '/common-' + type;
+        fs.ensureDirSync(dest);
+        fs.copySync( src, dest, filterFunc );
+    });
+}
 
 // Prompt for login, and get accessKey
 promptForLogin(function(email,password){
@@ -98,7 +148,7 @@ function setupEachBot( botNames, index, userKey, botCids ) {
     }
 
     // cache private keys for bot server to use
-    var filename = './bot_modules/' + name + '/' + name + '-private-keys.json';
+    var filename = './bot_modules/' + name + '/mobido-private-keys.json';
     var body = { cryptos:botShim.cryptos };
     var json = JSON.stringify(body,null,'\t');
     fs.writeFileSync(filename,json);
@@ -108,14 +158,14 @@ function setupEachBot( botNames, index, userKey, botCids ) {
     var botKey = botShim.cryptos[id];
 
     // make sure static web page directory exists
-    var path = './static/a/' + name;
+    var path = options.static_pages_dir + '/a/' + name;
     if( fs.existsSync( path ) == false )
         fs.mkdirSync( path );
 
     // strip out private keys and save for production use
     // The messenger clients use this
     botKey.values.splice(1);  // remove all but first value, which is the public key
-    var filename = path + '/' + name + '-public-keys.json';
+    var filename = path + '/mobido-public-keys.json';
     var json = JSON.stringify(body,null,'\t');
     fs.writeFileSync(filename,json);
 
@@ -130,7 +180,7 @@ function setupEachBot( botNames, index, userKey, botCids ) {
 
     // write the mobido server keys
     fetchAccessKeyResult.botcid = botcid;
-    var filename = './bot_modules/' + name + '/' + name + '-mobido-server-keys.json'; 
+    var filename = './bot_modules/' + name + '/mobido-server-keys.json'; 
     var json = JSON.stringify(fetchAccessKeyResult,null,'\t');
     fs.writeFileSync(filename,json);
 
@@ -187,9 +237,18 @@ function reloadTestThread( tid ) {
 
 // Finally! Write shim data to a place the widget shim code can get it for testing
 function writeShimData() {
-    filename = './static/dev/shim-data.json';
+    var path = options.static_pages_dir + '/dev';
+    if( fs.existsSync( path ) == false )
+        fs.mkdirSync( path );
+
+    path += '/shim-data.json';
     json = JSON.stringify(shimData,null,'\t');  // tabs to be pretty/easy to read
-    fs.writeFileSync(filename,json);
+    fs.writeFileSync(path,json);
+
+    // make sure there's a .gitignore so it doesn't go to the public sebserver!
+    path = options.static_pages_dir + '/dev/.gitignore';
+    if( fs.existsSync( path ) == false )
+        fs.writeFileSync(path,'shim-data.json');   
 
     console.log( 'Success!' );
 }

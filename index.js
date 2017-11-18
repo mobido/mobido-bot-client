@@ -1,6 +1,6 @@
 const request = require('request');
 const crypto = require('crypto');
-const net = require('./net');
+const net = require('mobido-bot-client/net');
 
 const ALT_MOBIDO_SERVER = process.env.ALT_MOBIDO_SERVER;
 const MOBIDO_SERVER = ALT_MOBIDO_SERVER ? ALT_MOBIDO_SERVER : "http://m.mobido.com";
@@ -30,7 +30,7 @@ exports.fetchAccessKey = function(login,next) {
 		if( err )
 			return next(err);
 		if( res.statusCode != 200 ) {
-			return next( new net.Error( res.statusCode, 'Failed to get access key (login) from Mobido server ' + url ) );
+			return next( new net.ServerError( res.statusCode, 'Failed to get access key (login) from Mobido server ' + url ) );
 		}
 
 		// add some debug info to result
@@ -64,7 +64,7 @@ exports.fetchCardPublicKey = function( accessKey, cid, tid, pkid, next ) {
 		if( err )
 			return next(err);
 		if( res.statusCode != 200 ) {
-			return next( new net.Error( res.statusCode, 'Failed to get card public key from Mobido server' + url ) );
+			return next( new net.ServerError( res.statusCode, 'Failed to get card public key from Mobido server' + url ) );
 		}
 
 		var result = JSON.parse(body);
@@ -85,7 +85,7 @@ exports.fetchCardPublicKeyByType = function( accessKey, cid, tid, type, next ) {
 		if( err )
 			return next(err);
 		if( res.statusCode != 200 ) {
-			return next( new net.Error( res.statusCode, 'Failed to get card public key from Mobido server' + url ) );
+			return next( new net.ServerError( res.statusCode, 'Failed to get card public key from Mobido server' + url ) );
 		}
 
 		var result = JSON.parse(body);
@@ -104,7 +104,7 @@ exports.fetchBotPublicKeyByType = function( accessKey, cid, type, next ) {
 		if( err )
 			return next(err);
 		if( res.statusCode != 200 ) {
-			return next( new net.Error( res.statusCode, 'Failed to get bot public key from Mobido server' + url ) );
+			return next( new net.ServerError( res.statusCode, 'Failed to get bot public key from Mobido server' + url ) );
 		}
 
 		var result = JSON.parse(body);
@@ -180,7 +180,7 @@ function secureJsonRequest( accessKey, method, path, data, next ) {
 		if( err ) {
 			next(err);
 		} else if( res.statusCode != 200 ) {
-			return next( new net.Error( res.statusCode, 'Failed to ' + options.method + ' ' + url ) );
+			return next( new net.ServerError( res.statusCode, 'Failed to ' + options.method + ' ' + url ) );
 		} else {
 			if( DEBUG ) console.log( 'Response', res.headers );
 			next(null,bodyAsJson);

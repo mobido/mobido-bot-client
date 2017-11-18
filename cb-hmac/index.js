@@ -1,8 +1,7 @@
 const crypto = require('crypto');
-const cache = require('./cache');
-const MWS = require('./mobidoWebService');
-const util = require('./util');
-const net = require('./net');
+const MWS = require('mobido-bot-client');
+const cache = require('mobido-bot-client/cache');
+const net = require('mobido-bot-client/net');
 const FIFTEEN_MINUTES = 1000 * 60 * 15;
 
 const DEBUG = true;
@@ -89,7 +88,7 @@ exports.isSecure = function( req, mobidoAccessKey, botKeys, next ) {
     if( Math.abs( drift ) > FIFTEEN_MINUTES )
         return next(new net.Error(net.ERROR_CODE_BAD_REQUEST,'Too much drift: ' + drift + 'ms'));
 
-    var kvset = util.asKVSet( tokens[1] );
+    var kvset = asKVSet( tokens[1] );
     if( !kvset.headers )
         return next(new net.Error(net.ERROR_CODE_BAD_REQUEST,'Missing headers list'));
 
@@ -177,7 +176,7 @@ function verifyWithKeys(req,authType,kvset,cardKey,botKeys,next) {
     var preamble = req.method + ' ' + req.originalUrl + '\n';
     var hlist = kvset.headers.split(';');
     for( var i = 0; i < hlist.length; i++ ){
-        var name = util.clean( hlist[i] );
+        var name = clean( hlist[i] );
         var value = req.headers[name] + '\n';
         if( name == 'host' ) {
             value = value.toLowerCase();    // server is giving mixed case host names
@@ -209,4 +208,27 @@ function verifyWithKeys(req,authType,kvset,cardKey,botKeys,next) {
 
     delete req.hmac; 
     next(null,req.cid ? true : false);
+}
+
+function trim (x) {
+    return x && x.replace(/^\s+|\s+$/gm,'');
+}
+
+function clean(y) {
+    return y && trim(y).toLowerCase();
+}
+
+function asKVSet( s )
+{
+    var result = {};
+    s.split(',').forEach(function(x){
+      var p = x.indexOf('=');
+      if( p > -1 ) {
+          var key = clean(x.substring(0,p));
+          var value = trim(x.substring(p + 1));
+          value && (result[key] = value);
+      }
+    });
+
+    return result;
 }
