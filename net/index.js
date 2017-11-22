@@ -12,7 +12,7 @@ exports.renderError = function(req,res,err) {
 exports.signalNotOk = function(req,res,statusCode,message,details) {
 	var err = { message:message, details:details };
     log(req,statusCode,err);
-    res.status(statusCode).json(err);
+    res.status(statusCode).json({failure:err});
 }
 
 exports.signalError = function(req,res,err) {
@@ -22,7 +22,7 @@ exports.signalError = function(req,res,err) {
     }
 
     log(req,statusCode,err);
-    res.status( statusCode ).json(err);
+    res.status( statusCode ).json({failure:err});
 }
 
 function ServerError(statusCode,message,details) {
