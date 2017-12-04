@@ -1,27 +1,4 @@
 {
-  "_from": "mobido-bot-client@1.0.2",
-  "_id": "mobido-bot-client@1.0.2",
-  "_inBundle": false,
-  "_integrity": "sha512-VdiH/PyA27momrgbYdd7k3mN8QCpvk6031em2Rx1BHTwwptueVhL1H938tENEky3nQPPDMXWtIjgYFJIV4vYfQ==",
-  "_location": "/mobido-bot-client",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "version",
-    "registry": true,
-    "raw": "mobido-bot-client@1.0.2",
-    "name": "mobido-bot-client",
-    "escapedName": "mobido-bot-client",
-    "rawSpec": "1.0.2",
-    "saveSpec": null,
-    "fetchSpec": "1.0.2"
-  },
-  "_requiredBy": [
-    "/"
-  ],
-  "_resolved": "https://registry.npmjs.org/mobido-bot-client/-/mobido-bot-client-1.0.2.tgz",
-  "_shasum": "e5f170d64507fae8f52fea33794c4b55e7a711b7",
-  "_spec": "mobido-bot-client@1.0.2",
-  "_where": "/Users/mike/presdo/hub_smart_contract_server",
   "author": {
     "name": "Mike Prince"
   },
