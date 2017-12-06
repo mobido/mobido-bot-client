@@ -137,6 +137,11 @@ exports.createThread = function( accessKey, thread, next ) {
 	secureJsonRequest( accessKey, 'POST', 'threads', thread, next );
 }
 
+// rsvp = { keys: { cid: cardid, tid: threadid }, expires: +seconds, max:5 }
+exports.createRSVP = function( accessKey, rsvp, next ) {
+	secureJsonRequest( accessKey, 'POST', 'connect/rsvp', rsvp, next );
+}
+
 exports.addCardToThread = function( accessKey, tid, addcid, mycid, next ) {
 	var path = 'threads/' + tid + '/add/' + addcid + '/by/' + mycid;
 	secureJsonRequest( accessKey, 'PUT', path, null, next );
